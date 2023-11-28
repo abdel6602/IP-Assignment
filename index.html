@@ -20,12 +20,55 @@
     </header>
 
     <main>
-        <div class="search-container">
-            <input type="text" class="Search-Bar" placeholder="Dish Name">
-            <button class="search-btn">
-                <i class="fas fa-search"></i>
-            </button>
+        <aside>
+            <div class="nav-bar-out">
+                <ul>
+                    <li class="nav-bar-item selected-page">
+                        <div class="nav-bar-item-contents">
+                            <i class="fas fa-house"></i>
+                            <a href="./index.html" class="title">Home</a>    
+                        </div>
+                    </li>
+                    <li class="nav-bar-item">
+                        <div class="nav-bar-item-contents">
+                            <i class="fas fa-heart"></i>
+                            <a href="./Favourites" class="title">
+                                Favourites
+                            </a>
+                        </div>
+                    </li>
+                    <li class="nav-bar-item">
+                        <div class="nav-bar-item-contents">
+                            <i class="fas fa-bowl-food"></i>
+                            <a href="#" class="title">Cuisines</a>
+                            <i class="fas fa-caret-right"></i>
+                        </div>    
+                    </li>
+                    <li class="nav-bar-item">
+                        <i class="fas fa-arrow-right-to-bracket"></i>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+        <div class="home-body">
+            <div class="search-container">
+                <input type="text" class="Search-Bar" placeholder="Dish Name">
+                <button class="search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+    
+            <section id="for-you">
+                <br><br>
+                <h3>For You</h3> <br>
+                <div class="fy-container">
+                    <div class="fy-item-container">
+                        <img src="./assets/images/meals/beef.png" alt="">
+                    </div>
+                </div>
+            </section>
         </div>
+        
     </main>
     <script src="./scripts/MainSrcipt.js"></script>
 </body>

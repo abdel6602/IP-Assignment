@@ -1,5 +1,36 @@
+
+async function isOnline() {
+  if (navigator.onLine) {
+    return fetch('https://www.google.com', { mode: 'no-cors' })
+      .then(response => {
+        // If the response is successful, it means the request was sent
+        // Note: You can't access the response body or headers in no-cors mode
+        return true;
+      })
+      .catch(error => {
+        // An error occurred, which may indicate no internet connection
+        return false;
+      });
+  } else 
+      return false;
+  
+}
+
+isOnline().then(result => {
+  if (result) {
+    console.log('Device is connected to the internet.');
+  } else {
+    window.location.href = '../src/disconnected.html';
+  }
+});
+
+get_for_you_items();
+
+
+
 var searchBtn = document.getElementsByClassName('search-btn')[0];
 searchBtn.addEventListener('click', expandSearch); 
+
 
 
 function expandSearch() {
@@ -19,6 +50,8 @@ function get_for_you_items(){
           if (!response.ok) {
               throw new Error(`Network response was not ok; status: ${response.status}`);
           }
+          if(response.code == 404)
+            console.log('Not found');
           // Parse the JSON in the response
           return response.json();
       })
@@ -37,11 +70,6 @@ function get_for_you_items(){
 
 
 
-get_for_you_items();
-// var for_you = document.getElementsByClassName('fy-container')[0];
-// for(var i = 0; i < 8; i++){
-//     for_you.innerHTML += '<div class="fy-item-container"></div>';
-// }
 
 document.getElementsByClassName('fa-bars')[0].addEventListener('click', () => {
   var navBar = document.getElementsByClassName('nav-bar-out')[0];

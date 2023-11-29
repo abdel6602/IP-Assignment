@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OOPS :/</title>
+    <link rel="stylesheet" href="../assets/stylesheets/MainStyle.css">
+    <link rel="stylesheet" href="../assets/stylesheets/noInternet.css">
+</head>
+
+<body>
+    <header>
+        <nav>
+            <i class="fas fa-bars"></i>
+        </nav>
+        <div class="logo-container">
+            <img src="../assets/images/Logos/logo-no-background.png" alt="" width="200px">
+
+        </div>
+        <div class="empty-div"></div>
+    </header>
+
+    <main>
+        <div class="container">
+            <img src="../assets/images/noInternet.png" alt="">
+            <button id="goHome">
+                Go Home
+            </button>
+            <label id="error">Sorry, Please connect to the internet first</label>
+        </div>
+    </main>
+
+    <script>
+        document.getElementById("goHome").addEventListener("click", function () {
+            if(isOnline()){
+                window.location.href = "../src/index.html";
+            }
+            else{
+                document.getElementById("error").style.display = "block";
+            }
+        });
+        function isOnline() {
+            if (navigator.onLine) {
+                return fetch('https://www.google.com', { mode: 'no-cors' })
+                    .then(response => {
+                        // If the response is successful, it means the request was sent
+                        // Note: You can't access the response body or headers in no-cors mode
+                        return true;
+                    })
+                    .catch(error => {
+                        // An error occurred, which may indicate no internet connection
+                        return false;
+                    });
+            } else {
+                return false;
+            }
+        }
+    </script>
+</body>
+
+</html>

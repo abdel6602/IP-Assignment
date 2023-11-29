@@ -9,7 +9,20 @@ body{
     display: flex;
     flex-direction: column;
     place-items: center;
+
 }   
+
+::-webkit-scrollbar {
+    width: 12px;
+    background-color: lightgrey
+  }
+
+  ::-webkit-scrollbar-thumb{
+    background-color: grey;
+    border-radius: 40px;
+  }
+  
+
 
 header{
     padding: 1%;
@@ -92,15 +105,14 @@ main{
 }
 
 .nav-bar-out{
-    transform: translateX(-400px);
-    width: 0;
+    width: 200px;
+    height: 100%;
+    position:absolute;
+    left: -100%;
     background-color: #2E8B57;
-    height: 100vh;
     display: flex;
     flex-direction: column;
-    width: 200px;
-    transition: all 0.5s ease;
-    
+    transition: all 0.3s ease;
 }
 
 aside{
@@ -108,30 +120,12 @@ aside{
 }
 
 .nav-bar-out.out {
-    opacity: 1;
-    transform: translateX(0);
+    left: 0;
     width: 200px;
-    transition: opacity 1s ease;
-    transition: all 0.5s ease-in;
+    transition: all 0.3s ease;
+    
 }
 
-aside.out{
-    width: 200px;
-}
-
-main.out {
-    width: 100%;
-    transition: all 0.5s ease-in;
-}
-
-.home-body.out{
-    padding-left: 50px;
-    transition: all 0.5s ease-in;
-}
-
-.home{
-    transition: all 0.5s ease;
-}
 
 .nav-bar-item{
     color: white;

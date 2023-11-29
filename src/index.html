@@ -11,12 +11,17 @@
     <header>
         <nav>
            <i class="fas fa-bars"></i>
+           <!-- TODO: implement the sub navigation -->
         </nav>
         <div class="logo-container">
             <img src="../assets/images/Logos/logo-no-background.png" alt="" width="200px">
               
         </div>
-        <div class="empty-div"></div>
+        <div class="sign-in-div">
+            <a href="signIn.html">
+                <i class="fas fa-arrow-right-to-bracket"></i>
+            </a> 
+        </div>
     </header>
 
     <main>
@@ -40,21 +45,21 @@
                     <li class="nav-bar-item">
                         <div class="nav-bar-item-contents">
                             <i class="fas fa-bowl-food"></i>
-                            <a href="#" class="title">Cuisines</a>
+                            <a href="#" class="title">Category</a>
                             <i class="fas fa-angle-right"></i>
                         </div>    
                     </li>
-                    <li class="nav-bar-item">
-                        <i class="fas fa-arrow-right-to-bracket"></i>
-                    </li>
+                    
                 </ul>
             </div>
         </aside>
         <div class="home-body">
             <div class="search-container">
-                <input type="text" class="Search-Bar" placeholder="Dish Name">
-                <button class="search-btn">
-                    <i class="fas fa-search"></i>
+                <form action="./search.html" method="get" id="search-form">
+                    <input type="text" class="Search-Bar" placeholder="Dish Name">
+                    <!-- <button class="search-btn"> -->
+                    <i class="fas fa-search search-btn"></i>
+                </form>
                 </button>
             </div>
     
@@ -67,8 +72,12 @@
                     </div>
                 </div>
             </section>
+            <br><br>
+            <h3>Recently Viewed</h3>
+            <section class="recently-viewed">
+                    
+            </section>
         </div>
-        
     </main>
     <script src="../scripts/MainSrcipt.js"></script>
 </body>

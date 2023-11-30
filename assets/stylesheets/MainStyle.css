@@ -130,9 +130,7 @@ aside{
 
 .nav-bar-out.out {
     left: 0;
-    width: 200px;
     transition: all 0.3s ease;
-    
 }
 
 
@@ -187,7 +185,7 @@ a{
     transition: all 0.2s ease-in;
 }
 
-.recently-viewed{
+.recently-viewed, .search-results{
     margin-top: 3rem;
     display:flex;
     flex-wrap: wrap;
@@ -264,8 +262,47 @@ a{
     color:red;
 }
 
+.sub-nav-container{
+    display: none;
+    color: white;
+    flex-direction: column;
+    align-items: center;
+    height: 150px;
+    background-color: #267548;
+    justify-content: space-around; 
+    position: relative;
+    top: -100%;
+}
 
-.fa-arrow-right-to-bracket{
+.sub-nav-container.open-nav{
+    display: flex;
+    top: 0;
+    height: 150px;
+    transition: all 0.4s ease;
+}
+
+.sub-nav-container > li{
+    height: 100%;
+    width: 100%;
+    list-style-type: none;
+    text-align: center;
+    padding-top: 10px;
+}
+
+.sub-nav-container > li:hover{
+    background-color: #2E8B57;
+}
+
+.fa-angle-right.open{
+    transform: rotate(90deg);
+    transition: 0.4s ease;
+}
+
+.fa-angle-right{
+    transition: all 0.4s ease;
+}
+
+.fa-arrow-right-to-bracket, .fa-arrow-right-from-bracket{
     position: relative;
     font-size: 30px;
     margin-right: 1%;
@@ -290,3 +327,76 @@ a{
     width:100%;
     transition: 0.2s;
 }
+
+.no-search-results{
+    display: none;   
+}
+
+.inner-no-search{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.inner-no-search > img{
+    /* border: 1px solid black; */
+    padding: 50px;
+    background-color: #267548;
+    border-radius: 50px;
+    box-shadow: 5px 3px 20px 6px #2E8B57;
+}
+/* 
+.auth-container{
+    width: 50vw;
+    height: 50vh;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #267548;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.auth-container > form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    color: white;
+    transition: all 0.3s ;
+}
+
+.auth-container > form > h2{
+    margin: 25px;
+}
+
+.auth-container > form > label{
+    margin: 10px;
+}
+
+.auth-container > form > input{
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #333333;
+    border-radius: 10px;
+}
+
+.auth-container > form > button{
+    background-color: #333333;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.switch-form{
+    margin-top: 15px;
+}
+
+.auth-container > form > a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: bold;
+} */
+

@@ -4,8 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
-    <title>Recipe Website Sign In/Up</title>
+    <title>Sign In/Up</title>
     <link rel="stylesheet" href="../assets/stylesheets/MainStyle.css">
     <style>
         main {
@@ -106,6 +105,9 @@
         </div>
     </header>
     <main>
+        <aside>
+
+        </aside>
         <div class="container">
             <form id="signInForm">
                 <h2>Sign In</h2>
@@ -137,15 +139,31 @@
     <script>
         function signIn() {
             //validate sign in
-            // if valid 
-                // save the fact that it's logged in
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            if(username === '1234' && password === '123') {
                 window.localStorage.setItem('Authentication', true);
                 window.location.href = './index.html'
+                return;
+            }
+            else{
+                alert('Invalid username or password' + '\n psst, try: Username: 1234' +'\nPassword: 123');
+            }
         }
 
         function signUp() {
-            // Add your sign-up logic here
-            console.log('Sign Up clicked');
+            // validate data
+            const newUsername = document.getElementById('newUsername').value;
+            const newPassword = document.getElementById('newPassword').value;
+            if(newUsername === '' || newPassword === '') {
+                alert('Please fill in all fields');
+                return;
+            }
+            else{
+                alert('Account created successfully');
+                toggleForm();
+            }
+            // save user info in database
         }
 
         function toggleForm() {

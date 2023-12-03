@@ -55,11 +55,11 @@ function load_nav() {
     <ul class="sub-nav-container">
         <li class="sub-nav-item">
             <h3 class="sub-nav-item-title">Beef</h3>
-            <i class="fas fa-angle-right"></i>
+            <i class="fas fa-bacon"></i>
         </li>
         <li class="sub-nav-item">
             <h3 class="sub-nav-item-title">Vegan</h3>
-            <i class="fas fa-angle-right"></i>
+            <i class="fas fa-seedling"></i>
             <li class="sub-nav-item" id="chickenBtn">
                 <h3 class="sub-nav-item-title">Any</h3>
                 <i class="fas fa-angle-right"></i>
@@ -69,13 +69,13 @@ function load_nav() {
                     <h4 class="second-level-title">
                         British
                     </h4>
-                    <i class="fas fa-angle-right"></i>
+                    <i class="fas fa-angles-right"></i>
                 </li>
                 <li class="second-level-item">
                     <h4 class="second-level-title">
                         Italian
                     </h4>
-                    <i class="fas fa-angle-right"></i>
+                    <i class="fas fa-angles-right"></i>
                 </li class="second-level-item">
             </ul>
         </li>
@@ -101,6 +101,7 @@ switch (window.location.href) {
     case (BASE_URL + 'category.html'):
         load_category();
     case (BASE_URL + 'cook.html'):
+        load_cooking_instructions();
         break;
     default:
         break;
@@ -131,6 +132,7 @@ function load_home() {
     searchBtn.addEventListener('click', () => {
         var searchInput = document.getElementsByClassName('Search-Bar')[0];
         searchInput.classList.toggle('expanded');
+        searchInput.focus();
     })
 
 
@@ -321,18 +323,18 @@ function save_favorite(clicked_item, flag) {
             window.localStorage.setItem('favorites', JSON.stringify(favorites));
         }
         else {
-            if(flag){
+            if (flag) {
                 var favorites = JSON.parse(window.localStorage.getItem('favorites'));
                 var index = favorites.indexOf(clicked_item.id);
                 favorites.splice(index, 1);
                 window.localStorage.setItem('favorites', JSON.stringify(favorites));
                 window.location.reload();
             }
-            else{
+            else {
                 var favorites = JSON.parse(window.localStorage.getItem('favorites'));
                 var index = favorites.indexOf(clicked_item.id);
                 favorites.splice(index, 1);
-                window.localStorage.setItem('favorites', JSON.stringify(favorites));                
+                window.localStorage.setItem('favorites', JSON.stringify(favorites));
             }
         }
     }
@@ -411,7 +413,7 @@ function load_recently_viewed() {
                 </div>  
             </div>`
             }
-        })
+        });
 }
 
 
@@ -441,4 +443,67 @@ for (var i = 0; i < 2; i++) {
         window.localStorage.setItem('category', event.target.innerText);
         window.location.href = '../src/category.html';
     });
+}
+
+function load_cooking_instructions() {
+    var meal_id = window.localStorage.getItem('meal_id');
+    var container = document.querySelector('#meal-body');
+
+    fetch('https://www.themealdb.com/api/json/v1/1/lookup.php?i=' + meal_id)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Network response was not ok; status: ${response.status}`);
+            }
+            else
+                return response.json();
+        }).then(data => {
+            var strYoutube_modified = data.meals[0].strYoutube.replace('watch?v=', 'embed/');
+            strYoutube_modified += '?autoplay=1&mute=1';
+            var ingredients = [];
+            var measurements = [];
+            for (var i = 1; i < 21; i++) {
+                if (data.meals[0]['strIngredient' + i] != null) {
+                    ingredients.push(data.meals[0]['strIngredient' + i]);
+                    measurements.push(data.meals[0]['strMeasure' + i]);
+                }
+            }
+            container.innerHTML = `<div id="instructions-cover">
+            <img id="meal-pic" src="${data.meals[0].strMealThumb}">
+            <div class="add-to-fav-container">
+                <h3>Add to Your Favorites</h3>
+                <i class="fas fa-heart" id="${data.meals[0].idMeal}" onclick="save_favorite(this, 0)"></i>
+            </div>
+            <br><br><br>
+        </div>
+        <section class="ingredients-container">
+            <h2>Ingredients</h2>
+            <ul class="ingredients-list">
+
+            </ul>
+        </section>
+        <section>
+            <div class="instructions-container">
+                <h2>Instructions</h2>
+                <br>
+                <p>
+                    ${data.meals[0].strInstructions}
+                </p>
+
+        </section>
+        <br><br>
+        <section class="video-container">
+            <h2>Video</h2>
+            <br>
+            <iframe width="560" height="315" src="${strYoutube_modified}"
+                frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen></iframe>
+        </section>
+        <br><br><br>`
+            var ingredients_list = document.querySelector('.ingredients-list');
+            for (var i = 0; i < ingredients.length; i++) {
+                if (ingredients[i])
+                    ingredients_list.innerHTML += `<li>${ingredients[i]} - ${measurements[i]}</li>`
+            }
+        });
+
 }

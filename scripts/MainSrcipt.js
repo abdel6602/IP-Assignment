@@ -24,6 +24,67 @@ isOnline().then(result => {
         window.location.href = '../src/disconnected.html';
 });
 
+load_nav();
+
+function load_nav() {
+    //load header
+    const aside = document.querySelector('aside');
+    aside.innerHTML = `<div class="nav-bar-out">
+<ul>
+    <li class="nav-bar-item selected-page">
+        <div class="nav-bar-item-contents">
+            <i class="fas fa-house"></i>
+            <a href="./index.html" class="title">Home</a>
+        </div>
+    </li>
+    <li class="nav-bar-item">
+        <div class="nav-bar-item-contents">
+            <i class="fas fa-heart"></i>
+            <a href="./Favorites.html" class="title">
+                Favourites
+            </a>
+        </div>
+    </li>
+    <li class="nav-bar-item" id="category-btn">
+        <div class="nav-bar-item-contents">
+            <i class="fas fa-bowl-food"></i>
+            <a href="#" class="title">Category</a>
+            <i class="fas fa-angle-right"></i>
+        </div>
+    </li>
+    <ul class="sub-nav-container">
+        <li class="sub-nav-item">
+            <h3 class="sub-nav-item-title">Beef</h3>
+            <i class="fas fa-angle-right"></i>
+        </li>
+        <li class="sub-nav-item">
+            <h3 class="sub-nav-item-title">Vegan</h3>
+            <i class="fas fa-angle-right"></i>
+            <li class="sub-nav-item" id="chickenBtn">
+                <h3 class="sub-nav-item-title">Any</h3>
+                <i class="fas fa-angle-right"></i>
+            </li>                            
+            <ul class="second-level-nav-container">
+                <li class="second-level-item">
+                    <h4 class="second-level-title">
+                        British
+                    </h4>
+                    <i class="fas fa-angle-right"></i>
+                </li>
+                <li class="second-level-item">
+                    <h4 class="second-level-title">
+                        Italian
+                    </h4>
+                    <i class="fas fa-angle-right"></i>
+                </li class="second-level-item">
+            </ul>
+        </li>
+        </ul> 
+    </ul>
+</ul>
+</div>`
+
+}
 //loading the appropriate script for each page
 const BASE_URL = 'http://127.0.0.1:5500/src/';
 switch (window.location.href) {
@@ -36,25 +97,33 @@ switch (window.location.href) {
 
     case (BASE_URL + 'Favorites.html'):
         load_favorites();
-        break
+        break;
+    case (BASE_URL + 'category.html'):
+        load_category();
+    case (BASE_URL + 'cook.html'):
+        break;
     default:
         break;
 }
 
 document.getElementById('category-btn').addEventListener('click', () => {
-    console.log('clicked');
     document.getElementsByClassName('fa-angle-right')[0].classList.toggle('open')
     document.querySelector('.sub-nav-container').classList.toggle('open-nav')
-    
+
 })
 
+document.querySelector('#chickenBtn').addEventListener('click', () => {
+    console.log('clicked');
+    document.querySelector('#chickenBtn > i').classList.toggle('open')
+    document.querySelector('.second-level-nav-container').classList.toggle('open-nav')
+});
 
 function load_home() {
-    if(window.localStorage.getItem('Authentication') == false){
+    if (window.localStorage.getItem('Authentication') == false) {
         var icon = document.getElementsByClassName('SignInIcon')[0];
         icon.classList = 'SignInIcon fas fa-arrow-right-to-bracket';
     }
-    if(window.localStorage.getItem('Authentication') == true){
+    if (window.localStorage.getItem('Authentication') == true) {
         var icon2 = document.getElementsByClassName('SignInIcon')[0];
         icon2.classList = 'SignInIcon fas fa-arrow-right-from-bracket';
     }
@@ -120,14 +189,14 @@ function load_search_results() {
                 for (let index = 0; index < data.meals.length; index++) {
                     search_result_container.innerHTML += `<div class="rw-item-container">
                     <div class="top-container">
-                    <img src="${data.meals[index].strMealThumb}" alt="meal thumbnail">
+                    <img src="${data.meals[index].strMealThumb}" alt="${data.meals[index].strMeal}" class="card-img" id="${data.meals[index].idMeal}" onclick="view_meal(this)">
                     </div>
                         <div class="bottom-container">
                             <h4 class="title">
                                 ${data.meals[index].strMeal}
                             </h4>
                             <div class="heart-container">
-                                <i class="fab fa-gratipay"></i>
+                            <i class="fas fa-heart" id="${data.meals[index].idMeal}" onclick="save_favorite(this)"></i>
                             </div>
                         </div>  
                     </div>`
@@ -138,15 +207,144 @@ function load_search_results() {
 }
 
 function load_favorites() {
-    
+    var container = document.querySelector('.results-container');
+    if (!window.localStorage.getItem('favorites')) {
+        container.innerHTML = `<h2 style="color: red">You have no favorites yet!</h2>`;
+    }
+    else {
+        var favorites = JSON.parse(window.localStorage.getItem('favorites'));
+        for (var i = 0; i < favorites.length; i++) {
+            fetch('https://www.themealdb.com/api/json/v1/1/lookup.php?i=' + favorites[i])
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Network response was not ok; status: ${response.status}`);
+                    }
+                    else
+                        return response.json();
+                }).then(data => {
+                    container.innerHTML += `<div class="rw-item-container">
+                <div class="top-container">
+                <img src="${data.meals[0].strMealThumb}" alt="${data.meals[0].strMeal}" class="card-img" id="${data.meals[0].idMeal}" onclick="view_meal(this)">
+                </div>
+                    <div class="bottom-container">
+                        <h4 class="title">
+                            ${data.meals[0].strMeal}
+                        </h4>
+                        <div class="heart-container">
+                        <i class="fas fa-heart red" id="${data.meals[0].idMeal}" onclick="save_favorite(this, 1)"></i>
+                        </div>
+                    </div>  
+                </div>`
+                });
+        }
+    }
+
 }
+
+function load_category() {
+    var category = window.localStorage.getItem('category');
+    var data_area, data_category = []
+    var results_container = document.querySelector('.results-container');
+    if (category == 'Beef' || category == 'Vegan') {
+        fetch('https://www.themealdb.com/api/json/v1/1/filter.php?c=' + category)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Network response was not ok; status: ${response.status}`);
+                }
+                else
+                    return response.json();
+            }).then(data => {
+                console.log(data);
+                for (var i = 0; i < data.meals.length; i++) {
+                    results_container.innerHTML += `<div class="rw-item-container" id="${data.meals[i].idMeal}">
+                <div class="top-container">
+                <img src="${data.meals[i].strMealThumb}" alt="${data.meals[i].strMeal}" class="card-img" id="${data.meals[i].idMeal}" onclick="view_meal(this)">
+                </div>
+                    <div class="bottom-container">
+                        <h4 class="title">
+                            ${data.meals[i].strMeal}
+                        </h4>
+                        <div class="heart-container">
+                        <i class="fas fa-heart" id="${data.meals[i].idMeal}" onclick="save_favorite(this)"></i>
+                        </div>
+                    </div>  
+                </div>`
+                }
+            });
+    }
+    else {
+        fetch('https://www.themealdb.com/api/json/v1/1/filter.php?a=' + category)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Network response was not ok; status: ${response.status}`);
+                }
+                else
+                    return response.json();
+            }).then(data => {
+                for (var i = 0; i < data.meals.length; i++) {
+                    results_container.innerHTML += `<div class="rw-item-container">
+                    <div class="top-container">
+                    <img src="${data.meals[i].strMealThumb}" alt="${data.meals[i].strMeal}" class="card-img" id="${data.meals[i].idMeal}" onclick="view_meal(this)">
+                    </div>
+                        <div class="bottom-container">
+                            <h4 class="title">
+                                ${data.meals[i].strMeal}
+                            </h4>
+                            <div class="heart-container">
+                                <i class="fas fa-heart" id="${data.meals[i].idMeal}" onclick="save_favorite(this)"></i>
+                            </div>
+                        </div>  
+                    </div>`
+                }
+            });
+    }
+    //TODO: make cooking instructions page
+}
+
+function view_meal(clicked_item) {
+    window.localStorage.setItem('meal_id', clicked_item.id);
+    window.location.href = '../src/cook.html';
+}
+
+function save_favorite(clicked_item, flag) {
+    clicked_item.classList.toggle('red');
+    if (!window.localStorage.getItem('favorites')) {
+        window.localStorage.setItem('favorites', JSON.stringify([]));
+        var favorites = JSON.parse(window.localStorage.getItem('favorites'));
+        favorites.push(clicked_item.id);
+        window.localStorage.setItem('favorites', JSON.stringify(favorites));
+    }
+    else {
+        if (!window.localStorage.getItem('favorites').includes(clicked_item.id)) {
+            var favorites = JSON.parse(window.localStorage.getItem('favorites'));
+            favorites.push(clicked_item.id);
+            window.localStorage.setItem('favorites', JSON.stringify(favorites));
+        }
+        else {
+            if(flag){
+                var favorites = JSON.parse(window.localStorage.getItem('favorites'));
+                var index = favorites.indexOf(clicked_item.id);
+                favorites.splice(index, 1);
+                window.localStorage.setItem('favorites', JSON.stringify(favorites));
+                window.location.reload();
+            }
+            else{
+                var favorites = JSON.parse(window.localStorage.getItem('favorites'));
+                var index = favorites.indexOf(clicked_item.id);
+                favorites.splice(index, 1);
+                window.localStorage.setItem('favorites', JSON.stringify(favorites));                
+            }
+        }
+    }
+
+}
+
 
 function load_no_results() {
-
     var no_results = document.querySelector('.no-search-results');
     no_results.style.display = 'block'
-
 }
+
 // populating the for you section using data from an api
 function get_for_you_items() {
     // URL for the meal lookup
@@ -168,7 +366,7 @@ function get_for_you_items() {
             // Handle the data
             var for_you = document.getElementsByClassName('fy-container')[0];
             for (var i = 0; i < 8; i++) {
-                for_you.innerHTML += `<div class="fy-item-container"><img class="${data.meals[i].idMeal}" id="${i}" src="${data.meals[i].strMealThumb}"></div>`;
+                for_you.innerHTML += `<div class="fy-item-container"><img src="${data.meals[i].strMealThumb}" alt="${data.meals[i].strMeal}" class="card-img" id="${data.meals[i].idMeal}" onclick="view_meal(this)"></div>`;
             }
         })
         .catch(error => {
@@ -201,14 +399,14 @@ function load_recently_viewed() {
             for (var i = 0; i < 10; i++) {
                 recently_viewed_body.innerHTML += `<div class="rw-item-container">
             <div class="top-container">
-            <img src="${data.meals[i].strMealThumb}" alt="meal thumbnail">
+            <img src="${data.meals[i].strMealThumb}" alt="${data.meals[i].strMeal}" class="card-img" id="${data.meals[i].idMeal}" onclick="view_meal(this)">
             </div>
                 <div class="bottom-container">
                     <h4 class="title">
                         ${data.meals[i].strMeal}
                     </h4>
                     <div class="heart-container">
-                        <i class="fab fa-gratipay"></i>
+                    <i class="fas fa-heart" id="${data.meals[i].idMeal}" onclick="save_favorite(this)"></i>
                     </div>
                 </div>  
             </div>`
@@ -216,8 +414,6 @@ function load_recently_viewed() {
         })
 }
 
-
-//TODO: implement the toggling of hearts in the history section and save to favs "database"
 
 function toggleForm() {
     const signInForm = document.getElementById('signInForm');
@@ -230,4 +426,19 @@ function toggleForm() {
         signInForm.style.display = 'none';
         signUpForm.style.display = 'block';
     }
+}
+
+for (var i = 0; i < 2; i++) {
+    document.getElementsByClassName('sub-nav-item')[i].addEventListener('click', (event) => {
+        window.localStorage.setItem('category', event.target.innerText);
+        window.location.href = '../src/category.html';
+    });
+}
+
+for (var i = 0; i < 2; i++) {
+    document.getElementsByClassName('second-level-item')[i].addEventListener('click', (event) => {
+        console.log(event);
+        window.localStorage.setItem('category', event.target.innerText);
+        window.location.href = '../src/category.html';
+    });
 }
